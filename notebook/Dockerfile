@@ -14,10 +14,17 @@ RUN conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pk
         'pandas=0.20*' \
         'scipy=0.19*' \
         'matplotlib=2.0*' \
+        'graphviz=2.38*' \
         'scikit-learn=0.19*' && \
     conda clean --all -f -y
 
 USER root
+
+RUN wget https://graphviz.gitlab.io/pub/graphviz/stable/SOURCES/graphviz.tar.gz -O graphviz.tar.gz && \
+    tar -xzf graphviz.tar.gz && \
+    mv graphviz-* graphviz && cd graphviz && \
+    ./configure --enable-python27 --enable-python34 && make && make install && \
+    cd .. && rm -rf graphviz*
 
 RUN $CONDA_DIR/envs/python2/bin/python -m ipykernel install && \
     $CONDA_DIR/envs/python2/bin/kernda -o -y /usr/local/share/jupyter/kernels/python2/kernel.json && \
